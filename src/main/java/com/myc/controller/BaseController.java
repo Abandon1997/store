@@ -5,6 +5,9 @@ import com.myc.utils.JsonResult;
 import org.omg.CORBA.UserException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.servlet.http.HttpSession;
+import java.net.HttpCookie;
+
 /**
  * 控制器类的基类
  */
@@ -22,7 +25,7 @@ public class BaseController {
         JsonResult<Void> result = new JsonResult<Void>(e);
         if (e instanceof UsernameDuplicateException) {
             result.setState(4000);
-            result.setMessage("用户名被占用");
+            result.setMessage("用户名被占用的异常");
         } else if (e instanceof UserNotFoundException) {
             result.setState(5001);
             result.setMessage("用户数据不存在的异常");
@@ -32,7 +35,20 @@ public class BaseController {
         } else if (e instanceof InsertException) {
             result.setState(5000);
             result.setMessage("用户在注册过程中产生了未知的异常");
+        } else if (e instanceof InsertException) {
+            result.setState(5003);
+            result.setMessage("更新数据时产生了未知的异常");
         }
         return result;
+    }
+
+    //获取当前用户的uid
+    protected final Integer getUidFromSession(HttpSession session) {
+        return Integer.valueOf(session.getAttribute("uid").toString());
+    }
+
+    //获取当前用户的用户名
+    protected final String getUsernameFromSession(HttpSession session) {
+        return session.getAttribute("username").toString();
     }
 }

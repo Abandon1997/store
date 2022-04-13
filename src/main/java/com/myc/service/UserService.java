@@ -20,4 +20,9 @@ public interface UserService extends IService<User> {
     void reg(User user);
 
     User login(String username, String password);
+
+    void changePassword(Integer uid,
+                        String username,
+                        String oldPassword,
+                        String newPassword);
 }

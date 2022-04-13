@@ -1,16 +1,14 @@
 package com.myc.controller;
 
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.myc.entity.User;
 import com.myc.service.UserService;
-import com.myc.service.ex.InsertException;
-import com.myc.service.ex.UsernameDuplicateException;
 import com.myc.utils.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -33,9 +31,26 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping("/login")
-    public JsonResult<User> login(String username, String password) {
+    public JsonResult<User> login(String username, String password, HttpSession session) {
         User data = userService.login(username, password);
+        // 向session对象中完成数据的绑定(session全局的)
+        session.setAttribute("uid", data.getUid());
+        session.setAttribute("username", data.getUsername());
+
+        //获取sessio中绑定的数据
+        System.out.println(getUidFromSession(session));
+        System.out.println(getUsernameFromSession(session));
+
         return new JsonResult<>(OK, data);
+    }
+
+    @RequestMapping("/change_password")
+    public JsonResult<Void> changePassword(String oldPassword, String newPassword, HttpSession session) {
+        Integer uid = getUidFromSession(session);
+        String username = getUsernameFromSession(session);
+        userService.changePassword(uid, username, oldPassword, newPassword);
+
+        return new JsonResult<>(OK);
     }
     /*public JsonResult<Void> reg(User user) {
         JsonResult<Void> result = new JsonResult<>();

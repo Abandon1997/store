@@ -1,14 +1,12 @@
 package com.myc.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.myc.entity.User;
 import com.myc.mapper.UserMapper;
 import com.myc.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.myc.service.ex.InsertException;
-import com.myc.service.ex.PasswordNotMatchException;
-import com.myc.service.ex.UserNotFoundException;
-import com.myc.service.ex.UsernameDuplicateException;
+import com.myc.service.ex.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -96,6 +94,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(result.getPassword());
 
         return user;
+    }
+
+    @Override
+    public void changePassword(Integer uid, String username, String oldPassword, String newPassword) {
+        UpdateWrapper updateWrapper = new UpdateWrapper();
+        updateWrapper.eq("uid", uid);
+        User result = userMapper.selectOne(updateWrapper);
+        if (result == null || result.getIsDelete() == 1) {
+            throw new UserNotFoundException("用户数据不存在");
+        }
+        String oldMd5Password = getMd5Password(oldPassword, result.getSalt());
+        if (!result.getPassword().contentEquals(oldMd5Password)) {
+            throw new PasswordNotMatchException("与原密码相同，请重新输入");
+        }
+        String newMd5Password = getMd5Password(newPassword, result.getSalt());
+
+        User user = new User();
+        user.setPassword(newMd5Password);
+        user.setModifiedUser(username);
+        user.setModifiedTime(new Date());
+        Integer rows = userMapper.update(user, updateWrapper);
+        if (rows != 1) {
+            throw new UpdateException("更新时产生未知的异常");
+        }
     }
 
     /**

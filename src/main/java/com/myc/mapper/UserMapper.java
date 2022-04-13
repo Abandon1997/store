@@ -4,6 +4,8 @@ import com.myc.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Date;
+
 /**
  * <p>
  * Mapper 接口
@@ -15,11 +17,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-    /**
-     * 查询用户信息
-     *
-     * @param username
-     * @return
-     */
+    Integer updatePasswordByUid(Integer uid,
+                                String password,
+                                String modfileUser,
+                                Date modfileTime);
 
+    User findUid(Integer uid);
 }

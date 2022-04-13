@@ -1,11 +1,14 @@
 package com.myc.service;
 
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.myc.entity.User;
 import com.myc.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 
 @SpringBootTest
@@ -18,8 +21,8 @@ public class UserServiceTests {
     void register() {
         try {
             User user = new User();
-            user.setUsername("myc222");
-            user.setPassword("123");
+            user.setUsername("111");
+            user.setPassword("111");
             userService.reg(user);
             System.out.println("ok");
         } catch (Exception e) {
@@ -35,5 +38,10 @@ public class UserServiceTests {
     void login() {
         User user = userService.login("111", "111");
         System.out.println(user);
+    }
+
+    @Test
+    void uodateusername() {
+        userService.changePassword(5, "管理员", "111", "222");
     }
 }

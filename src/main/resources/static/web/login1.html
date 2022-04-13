@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--360浏览器H5兼容设置-->
     <meta name="renderer" content="webkit" />
-    <title>注册页面</title>
+    <title>登录页面</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--导入核心文件-->
     <script src="../bootstrap3/js/holder.js"></script>
@@ -14,10 +14,9 @@
     <script src="../bootstrap3/jquery-1.9.1.min.js"></script>
     <script src="../bootstrap3/js/bootstrap.js"></script>
 </head>
-</head>
 <body>
 <div id="user_reg">用户登录</div>
-<form id="form-reg" method="post" name="form">
+<form id="form-login" method="post" name="form">
     <table>
         <tr>
             账号：<input type="text" id="username" name="username" placeholder="请输入用户名"/></td>
@@ -26,28 +25,25 @@
             密码：<input type="password" id="password" name="password" placeholder="请输入密码"/></td>
         </tr>
         <tr>
-            <input type="submit" id="btn-reg" value="登录"/>
+            <input type="submit" id="btn-login" value="登录"/>
         </tr>
     </table>
 </form>
 </body>
 <script type="text/javascript">
-    //1.监听注册按钮是否被点击
-    $("#btn-reg").click(function () {
-        //2.发送Ajax()的异步请求来完成用户的注册功能
-        console.log($("#form-reg").serialize())
+    $("#btn-login").click(function () {
         $.ajax({
-            url:"/users/reg",
-            type:"POST",
-            //username=tom & password=123
-            data:$("#form-reg").serialize(),
-            dataType:"JSON",
-            success:function (json){
+            url: "/users/login",
+            type: "POST",
+            data: $("#form-login").serialize(),
+            dataType: "JSON",
+            success: function (json) {
                 if (json.state == 200) {
-                    alert("注册成功！");
-                    // location.href = "login.html";
+                    alert("登录成功");
+                    //跳转到系统首页
+                    location.href = "index.html";
                 } else {
-                    alert("注册失败！" + json.message);
+                    alert("登录失败");
                 }
             },
             error:function (xhr) {
@@ -55,6 +51,5 @@
             }
         });
     });
-
 </script>
 </html>
